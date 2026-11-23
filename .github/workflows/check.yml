@@ -1,0 +1,30 @@
+name: Lite checks and Linux release
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm run lint && npm run check:boundaries && npm run check:test-ownership
+      - run: npm run coverage:unit && npm run test:integration
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - run: npm run package:standalone
+      - run: tar -czf dojo-lms-lite-linux-x64.tar.gz -C release .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dojo-lms-lite-linux-x64
+          path: dojo-lms-lite-linux-x64.tar.gz
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-results
+          path: |
+            playwright-report/
+            test-results/

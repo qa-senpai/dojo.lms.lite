@@ -1,0 +1,1 @@
+{"tests/e2e/lms.spec.ts":["accounts","course-authoring","learning","homework","course-catalog"],"tests/api/security.spec.ts":["accounts","course-roster","course-files","course-authoring"]}

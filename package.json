@@ -1,0 +1,45 @@
+{
+  "name": "dojo.lms.lite",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22.17.0"
+  },
+  "scripts": {
+    "dev": "next dev --hostname 127.0.0.1",
+    "build": "next build --webpack && node scripts/prepare-standalone.mjs",
+    "start": "node --env-file-if-exists=.env --max-old-space-size=256 scripts/start.mjs",
+    "lint": "oxlint --report-unused-disable-directives --max-warnings=0 && tsc --noEmit",
+    "typecheck": "tsc --noEmit",
+    "check:boundaries": "node scripts/check-module-boundaries.mjs",
+    "db:seed": "node --env-file-if-exists=.env --conditions=react-server --import tsx scripts/seed.ts",
+    "db:backup": "node --env-file-if-exists=.env scripts/backup.mjs",
+    "test:unit": "node --conditions=react-server --import tsx --test src/modules/*/*.test.ts src/platform/*.test.ts",
+    "test:integration": "node --conditions=react-server --import tsx --test tests/integration.test.ts",
+    "coverage:unit": "node --conditions=react-server --import tsx --experimental-test-coverage --test-coverage-exclude=**/*.test.ts --test src/modules/*/*.test.ts src/platform/*.test.ts",
+    "test:e2e": "playwright test",
+    "test:api": "playwright test tests/api",
+    "package:standalone": "node scripts/package-standalone.mjs",
+    "quality:report": "npm run lint && npm run check:boundaries",
+    "check:test-ownership": "node scripts/check-test-ownership.mjs"
+  },
+  "dependencies": {
+    "next": "16.3.4",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "zod": "^4.3.6",
+    "server-only": "0.0.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "oxlint": "^1.80.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "esbuild": "^0.28.2"
+  }
+}

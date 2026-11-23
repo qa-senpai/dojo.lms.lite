@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'unsafe-eval' blob:; worker-src blob:; connect-src 'none'; img-src 'none'; form-action 'none'"><title>JavaScript runner</title></head><body><script>
+addEventListener('message', function(event) {
+  if (event.source !== parent) return;
+  const source = `onmessage = async function(event) {
+    try {
+      const {code,tests}=event.data;
+      const solve=new Function(code+'; return typeof solve === "function" ? solve : null;')();
+      if(!solve) throw new Error('Оголосіть функцію solve');
+      const normalize=value=>Array.isArray(value)?value.map(normalize):value&&typeof value==='object'?Object.fromEntries(Object.keys(value).sort().map(key=>[key,normalize(value[key])])):value;
+      const lines=[];let passed=true;
+      for(let i=0;i<tests.length;i++) {
+        const test=tests[i];const actual=await solve(...test.input);
+        const ok=JSON.stringify(normalize(actual))===JSON.stringify(normalize(test.expected));
+        passed=passed&&ok;lines.push((ok?'✓':'✗')+' Тест '+(i+1)+(ok?'':': очікується '+JSON.stringify(test.expected)+', отримано '+JSON.stringify(actual)));
+      }
+      postMessage({passed,lines});
+    } catch(error) {postMessage({error:error.message||'Помилка виконання'});}
+  };`;
+  const url=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));const worker=new Worker(url);
+  const finish=result=>{clearTimeout(timer);worker.terminate();URL.revokeObjectURL(url);parent.postMessage(result,'*');};
+  const timer=setTimeout(()=>finish({error:'Час виконання перевищено (5 секунд)'}),5000);
+  worker.onmessage=event=>finish(event.data);worker.onerror=()=>finish({error:'Помилка JavaScript'});worker.postMessage(event.data);
+},{once:true});
+</script></body></html>
