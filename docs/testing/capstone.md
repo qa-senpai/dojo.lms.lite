@@ -18,6 +18,5 @@
 12. API: відсутня сесія, CSRF Origin, чужий course/chapter ID, malformed JSON.
 13. UI: мобільний viewport, клавіатура, labels/roles, пусті списки, помилки мережі.
 
-Не використовуйте глобальний reset API: його тут немає. Для локальних
-тестів використовуйте окремий DATABASE_PATH; Playwright runner стенда
+Для локальних тестів використовуйте окремий DATABASE_PATH; Playwright runner стенда
 сам створює й видаляє throwaway DB. Seed і admin CRUD достатні для fixtures.

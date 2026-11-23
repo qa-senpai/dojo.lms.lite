@@ -36,6 +36,8 @@ ACCEPTED. Прийняте ДЗ не можна переписати студе�
 Markdown не виконує raw HTML. Вкладення 1 байт–5 MiB: PDF/TXT/MD/CSV/JSON/PNG/JPG/ZIP,
 у SQLite BLOB; скачування як octet-stream attachment з nosniff і перевіркою доступу.
 
+Для авторів курсу є окрема [інструкція зі створення quiz і JavaScript-задач із JSON-прикладами](exercises.md).
+
 ## HTTP API
 
 JSON mutations мають `Content-Type: application/json` та `Origin: <APP_URL>`.
